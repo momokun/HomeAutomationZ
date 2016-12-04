@@ -414,13 +414,13 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
     public void onPause()
     {
         super.onPause();
-         /*   try {
+            try {
                 if (address != null) {
                     btSocket.close();
                 }
             } catch (IOException e2) {
                 //insert code to deal with this
-            }*/
+            }
 
     }
 
