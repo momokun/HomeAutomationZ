@@ -46,7 +46,7 @@ public class PairDevice extends AppCompatActivity {
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
 
         //component initialization
-        pairedDeviceList = (ListView) findViewById(R.id.list_paired_device);
+        pairedDeviceList = (ListView) findViewById(R.id.list_paired_devicxe);
 
 
         //array initialization for paired device
