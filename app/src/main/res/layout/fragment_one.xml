@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/linearlayoutMain"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent">
+
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swiperefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    tools:context="gs.momokun.tabtutorial.OneFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+    <TextView
+        android:text="arduino_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/arduino_status"
+        android:textSize="18sp"
+        android:textAlignment="center" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:text="Electronic 1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/electronicItem1"
+                android:layout_weight="1"
+                android:textSize="22sp"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp" />
+
+            <ImageButton
+                android:src="@drawable/ic_graph"
+                android:layout_height="29dp"
+                android:id="@+id/graphCheck1"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="true"
+                android:elevation="0dp"
+                android:background="@android:color/transparent"
+                android:layout_width="26dp"
+                android:layout_margin="10dp"
+                android:layout_marginRight="10dp" />
+
+            <ImageButton
+                android:src="@drawable/ic_rename"
+                android:layout_height="29dp"
+                android:id="@+id/changeLamp1"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="true"
+                android:elevation="0dp"
+                android:background="@android:color/transparent"
+                android:layout_width="26dp"
+                android:layout_margin="10dp"
+                android:layout_marginRight="10dp" />
+
+            <ToggleButton
+                android:text="ToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/toggleButtonElectronic1"
+                android:layout_weight="0.03"
+                android:layout_marginRight="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:text="Electronic 2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/electronicItem2"
+                android:layout_weight="1"
+                android:textSize="22sp"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp" />
+
+            <ImageButton
+                android:src="@drawable/ic_graph"
+                android:layout_height="29dp"
+                android:id="@+id/graphCheck2"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="true"
+                android:elevation="0dp"
+                android:background="@android:color/transparent"
+                android:layout_width="26dp"
+                android:layout_margin="10dp"
+                android:layout_marginRight="10dp" />
+
+            <ImageButton
+                android:src="@drawable/ic_rename"
+                android:layout_height="29dp"
+                android:id="@+id/changeLamp2"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="true"
+                android:elevation="0dp"
+                android:background="@android:color/transparent"
+                android:layout_width="26dp"
+                android:layout_margin="10dp" />
+
+            <ToggleButton
+                android:text="ToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/toggleButtonElectronic2"
+                android:layout_weight="0.03"
+                android:layout_marginRight="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:text="Electronic 3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/electronicItem3"
+                android:layout_weight="1"
+                android:textSize="22sp"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp" />
+
+            <ImageButton
+                android:src="@drawable/ic_graph"
+                android:layout_height="29dp"
+                android:id="@+id/graphCheck3"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="true"
+                android:elevation="0dp"
+                android:background="@android:color/transparent"
+                android:layout_width="26dp"
+                android:layout_margin="10dp"
+                android:layout_marginRight="10dp" />
+
+            <ImageButton
+                android:src="@drawable/ic_rename"
+                android:layout_height="29dp"
+                android:id="@+id/changeLamp3"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="true"
+                android:elevation="0dp"
+                android:background="@android:color/transparent"
+                android:layout_width="26dp"
+                android:layout_margin="10dp" />
+
+            <ToggleButton
+                android:text="ToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/toggleButtonElectronic3"
+                android:layout_weight="0.03"
+                android:layout_marginRight="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
+
+            <TextView
+                android:text="Electronic 4"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/electronicItem4"
+                android:layout_weight="1"
+                android:textSize="22sp"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp" />
+
+            <ImageButton
+                android:src="@drawable/ic_graph"
+                android:layout_height="29dp"
+                android:id="@+id/graphCheck4"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="true"
+                android:elevation="0dp"
+                android:background="@android:color/transparent"
+                android:layout_width="26dp"
+                android:layout_margin="10dp"
+                android:layout_marginRight="10dp" />
+
+            <ImageButton
+                android:src="@drawable/ic_rename"
+                android:layout_height="29dp"
+                android:id="@+id/changeLamp4"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="true"
+                android:elevation="0dp"
+                android:background="@android:color/transparent"
+                android:layout_width="26dp"
+                android:layout_margin="10dp" />
+
+            <ToggleButton
+                android:text="ToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/toggleButtonElectronic4"
+                android:layout_weight="0.03"
+                android:layout_marginRight="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
+
+            <TextView
+                android:text="Electronic 5"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/electronicItem5"
+                android:layout_weight="1"
+                android:textSize="22sp"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp" />
+
+            <ImageButton
+                android:src="@drawable/ic_graph"
+                android:layout_height="29dp"
+                android:id="@+id/graphCheck5"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="true"
+                android:elevation="0dp"
+                android:background="@android:color/transparent"
+                android:layout_width="26dp"
+                android:layout_margin="10dp"
+                android:layout_marginRight="10dp" />
+
+            <ImageButton
+                android:src="@drawable/ic_rename"
+                android:layout_height="29dp"
+                android:id="@+id/changeLamp5"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="true"
+                android:elevation="0dp"
+                android:background="@android:color/transparent"
+                android:layout_width="26dp"
+                android:layout_margin="10dp" />
+
+            <ToggleButton
+                android:text="ToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/toggleButtonElectronic5"
+                android:layout_weight="0.03"
+                android:layout_marginRight="10dp" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="15dp"
+            android:paddingBottom="80dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="10dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:text="Temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/temp_title"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp" />
+
+                    <TextView
+                        android:text="Voltage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/volt_title"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp" />
+
+                    <TextView
+                        android:text="Power"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/pow_title"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp" />
+
+                    <TextView
+                        android:text="Energy Consumed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/ec_title"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp" />
+
+                    <TextView
+                        android:text="Current"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/curr_title"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="left">
+
+                    <TextView
+                        android:text=":"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/db1"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:text=":"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/db2"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:text=":"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/db3"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:text=":"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/db4"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:text=":"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/db5"
+                        android:layout_weight="1" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:text="temp_in_c"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/temp_in_c"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp" />
+
+                    <TextView
+                        android:text="voltages"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/voltages"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp" />
+
+                    <TextView
+                        android:text="pow_watt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/pow_watt"
+                        android:layout_marginStart="10dp" />
+
+                    <TextView
+                        android:text="ec_watthour"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/ec_watthour"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp" />
+
+                    <TextView
+                        android:text="curr_ampere"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/curr_ampere"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    </LinearLayout>
