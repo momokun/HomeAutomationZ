@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ import static gs.momokun.tabtutorial.R.id.editTextDialogUserInput;
  * Created by ElmoTan on 10/21/2016.
  */
 
-public class OneFragment extends Fragment{
+public class OneFragment extends Fragment implements TwoFragment.FragmentBMethodsCaller{
 
     SwipeRefreshLayout reconnect;
 
@@ -99,7 +100,7 @@ public class OneFragment extends Fragment{
         //get saved address
         sp = PreferenceManager.getDefaultSharedPreferences(v.getContext());
         //check bluetooth hardware
-        BluetoothStateChecker();
+
 
         address = sp.getString("btAddr",null);
 
@@ -226,12 +227,23 @@ public class OneFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_one, container, false);
-
-
-
-        initiate();
-        setUp();
+            initiate();
+            setUp();
+            EventBus.getDefault().register(this);
         return v;
+    }
+
+    int stateArduino = 0;
+    @Subscribe
+    public void onStateReceived(ArduinoStateOnReceived event){
+        stateArduino = event.getStateArduino();
+        if(stateArduino == 0) {
+            hardware_status.setText("Device Disconnected");
+            hardware_status.setTextColor(Color.RED);
+        }else if(stateArduino == 1){
+            hardware_status.setText("Device Connected");
+            hardware_status.setTextColor(Color.GREEN);
+        }
     }
 
     //to create socket connection
@@ -249,29 +261,16 @@ public class OneFragment extends Fragment{
             }else{
                 Intent btRequestEnable = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(btRequestEnable,1);
+
             }
         }else{
             Toast.makeText(v.getContext(), "No Bluetooth on this device, please check your device.", Toast.LENGTH_SHORT).show();
+
         }
+
     }
 
 
-
-    @Subscribe
-    public void onStateReceived(ArduinoStateOnReceived event){
-        //get the phone number value here and do something with it
-        //LinearLayout ll = (LinearLayout) v.findViewById(R.id.linearlayoutMain);
-        int dataInMain = event.getStateArduino();
-        Log.v("TAGS ONEF", String.valueOf(dataInMain));
-        //final Snackbar snackbar = Snackbar.make(cl, "Arduino DC", Snackbar.LENGTH_INDEFINITE);
-        //snackbar.setAction("Dismiss", new View.OnClickListener() {
-         //   @Override
-         //   public void onClick(View v) {
-         //       snackbar.dismiss();
-         //   }
-        //});
-        //snackbar.show();
-    }
 
     private void sysHandler(){
         final String[] temp = new String[1];
@@ -365,42 +364,42 @@ public class OneFragment extends Fragment{
     public void onResume() {
 
         super.onResume();
-        BroadcastReceiver broadcastReceiver =  new BluetoothReceiver();
 
+            BroadcastReceiver broadcastReceiver = new BluetoothReceiver();
+            IntentFilter f = new IntentFilter();
+            f.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+            f.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+            getActivity().registerReceiver(broadcastReceiver, f);
 
-        IntentFilter f = new IntentFilter();
-        f.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-        f.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        getActivity().registerReceiver(broadcastReceiver,f);
+            sysHandler();
+            systemExtraTest();
 
-        sysHandler();
-        systemExtraTest();
-
-        reconnect.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                reconnect.setRefreshing(true);
-                for (int x = 0; x<2; x++) {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                if(btSocket!=null) {
-                                    btSocket.close();
-                                    btSocket = null;
+            reconnect.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    reconnect.setRefreshing(true);
+                    for (int x = 0; x < 2; x++) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    if (btSocket != null) {
+                                        btSocket.close();
+                                        btSocket = null;
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                                systemExtraTest();
                             }
-                            systemExtraTest();
-                        }
 
-                    }, 3000);
+                        }, 3000);
+
+                    }
 
                 }
+            });
 
-            }
-        });
 
 
         //Get MAC address from DeviceListActivity via intent
@@ -415,14 +414,19 @@ public class OneFragment extends Fragment{
     public void onPause()
     {
         super.onPause();
-        try
-        {
-            if(address!=null) {
-                btSocket.close();
+            try {
+                if (address != null) {
+                    btSocket.close();
+                }
+            } catch (IOException e2) {
+                //insert code to deal with this
             }
-        } catch (IOException e2) {
-            //insert code to deal with this
-        }
+
+    }
+
+    @Override
+    public void callTheMethodInFragmentB() {
+        systemExtraTest();
     }
 
 
@@ -457,9 +461,9 @@ public class OneFragment extends Fragment{
                     String readMessage = new String(buffer, 0, bytes);
                     // Send the obtained bytes to the UI Activity via handler
                     btConnectionHandler.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
-                    status = 1;
+
                 } catch (IOException e) {
-                    status = 0;
+
                     break;
                 }
             }
@@ -481,7 +485,8 @@ public class OneFragment extends Fragment{
 
     private void systemExtraTest(){
         Log.d("Call","CAlled");
-        int counter=0;
+
+
         if(address!=null) {
             //create device and set the MAC address
             device = btAdapter.getRemoteDevice(address);
@@ -506,15 +511,16 @@ public class OneFragment extends Fragment{
 
                     mConnectedThread = new ConnectedThread(btSocket);
                     mConnectedThread.start();
-
             //I send a character when resuming.beginning transmission to check device is connected
             //If it is not an exception will be thrown in the write method and finish() will be called
-            mConnectedThread.write("x");
+                 mConnectedThread.write("x");
         }else{
 
         }
         reconnect.setRefreshing(false);
     }
+
+
 
 
 

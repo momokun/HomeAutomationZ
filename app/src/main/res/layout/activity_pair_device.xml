@@ -23,7 +23,7 @@
         android:textColor="#fff"
         android:paddingLeft="5dp"
         />
-    <ListView android:id="@+id/list_paired_device"
+    <ListView android:id="@+id/list_paired_devicxe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:stackFromBottom="false"
