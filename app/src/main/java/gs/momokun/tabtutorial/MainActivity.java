@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -30,31 +31,18 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private int limit = 10;
-
+    Snackbar snackbar;
+    CoordinatorLayout cl;
+    int stateArduino = 0;
 
     @Subscribe
     public void onStateReceived(ArduinoStateOnReceived event){
-        //get the phone number value here and do something with it
-        CoordinatorLayout cl = (CoordinatorLayout) findViewById(R.id.coorMain);
-        int dataInMain = event.getStateArduino();
-        if(dataInMain==0) {
-            final Snackbar snackbar = Snackbar.make(cl, "Arduino Disconnected", Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("Dismiss", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    snackbar.dismiss();
-                }
-            });
-            snackbar.show();
-        }else{
-            final Snackbar snackbar = Snackbar.make(cl, "Arduino Connected", Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("Dismiss", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    snackbar.dismiss();
-                }
-            });
-            snackbar.show();
+        cl = (CoordinatorLayout) findViewById(R.id.coorMain);
+        stateArduino = event.getStateArduino();
+        if(stateArduino == 0) {
+            snackBarCustom("Arduino Disconnected","Dismiss");
+        }else if(stateArduino == 1){
+            snackBarCustom("Arduino Connected","Dismiss");
         }
     }
 
@@ -71,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //getSupportActionBar().setTitle("Test");
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -88,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                Log.v("Call","call on page selected");
+
             }
 
             @Override
@@ -139,7 +126,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStop(){
         super.onStop();
-
         EventBus.getDefault().unregister(this);
+    }
+
+    public void snackBarCustom(String msg, String cancelMsg){
+        snackbar = Snackbar.make(cl, msg, Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(cancelMsg, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        snackbar.show();
     }
 }

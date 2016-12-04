@@ -380,13 +380,11 @@ public class OneFragment extends Fragment{
             @Override
             public void onRefresh() {
                 reconnect.setRefreshing(true);
-
                 for (int x = 0; x<2; x++) {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             try {
-
                                 if(btSocket!=null) {
                                     btSocket.close();
                                     btSocket = null;
@@ -448,7 +446,6 @@ public class OneFragment extends Fragment{
             mmOutStream = tmpOut;
         }
 
-
         public void run() {
             byte[] buffer = new byte[256];
             int bytes;
@@ -467,18 +464,14 @@ public class OneFragment extends Fragment{
                 }
             }
         }
+
         //write method
         public void write(String input) {
             byte[] msgBuffer = input.getBytes();           //converts entered String into bytes
             try {
                 mmOutStream.write(msgBuffer);                //write bytes over BT connection via outstream
-
             } catch (IOException e) {
-                //if you cannot write, close the application
-                Toast.makeText(v.getContext(), "Connection Failure", Toast.LENGTH_LONG).show();
-                if(status==0) {
-
-                }
+                Log.d("Stat","Nothing Send");
             }
         }
 
@@ -488,6 +481,7 @@ public class OneFragment extends Fragment{
 
     private void systemExtraTest(){
         Log.d("Call","CAlled");
+        int counter=0;
         if(address!=null) {
             //create device and set the MAC address
             device = btAdapter.getRemoteDevice(address);
@@ -497,21 +491,21 @@ public class OneFragment extends Fragment{
                 Toast.makeText(getContext(), "Socket creation failed", Toast.LENGTH_LONG).show();
             }
             // Establish the Bluetooth socket connection.
-            try
-            {
-                btSocket.connect();
-            } catch (IOException e) {
-                try
-                {
-                    btSocket.close();
 
-                } catch (IOException e2)
-                {
+                try {
+                    btSocket.connect();
+                } catch (IOException e) {
+                    try {
+                        btSocket.close();
 
+                    } catch (IOException e2) {
+
+                    }
                 }
-            }
-            mConnectedThread = new ConnectedThread(btSocket);
-            mConnectedThread.start();
+
+
+                    mConnectedThread = new ConnectedThread(btSocket);
+                    mConnectedThread.start();
 
             //I send a character when resuming.beginning transmission to check device is connected
             //If it is not an exception will be thrown in the write method and finish() will be called

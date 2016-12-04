@@ -38,14 +38,10 @@ public class BluetoothReceiver extends BroadcastReceiver{
 
         switch (action){
             case BluetoothDevice.ACTION_ACL_CONNECTED:
-               // Toast.makeText(context, "Arduino Connected", Toast.LENGTH_SHORT).show();
                 EventBus.getDefault().post(new ArduinoStateOnReceived(1));
-
                 break;
             case BluetoothDevice.ACTION_ACL_DISCONNECTED:
-                //Toast.makeText(context, "Arduino Disconnected", Toast.LENGTH_SHORT).show();
                 EventBus.getDefault().post(new ArduinoStateOnReceived(0));
-
                 break;
         }
 
