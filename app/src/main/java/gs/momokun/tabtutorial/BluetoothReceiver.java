@@ -33,6 +33,7 @@ public class BluetoothReceiver extends BroadcastReceiver{
                 -1);
 
         String action = intent.getAction();
+
         BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
 

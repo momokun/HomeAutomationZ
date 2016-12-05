@@ -15,6 +15,7 @@ import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
@@ -63,7 +64,10 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
 
     protected int status = 0;
 
-    Handler btConnectionHandler;
+    private InputStream mmInStream;
+    private OutputStream mmOutStream;
+
+    Handler btConnectionHandler = null;
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
     private StringBuilder receivedDataFromArduino = new StringBuilder();
@@ -78,7 +82,7 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
     //arduino mac address
     private static String address;
 
-    BluetoothDevice device;
+    BluetoothDevice device = null;
 
     SharedPreferences sp;
 
@@ -96,7 +100,7 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
     private void initiate(){
 
         //get device default adapter
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
+
         //get saved address
         sp = PreferenceManager.getDefaultSharedPreferences(v.getContext());
         //check bluetooth hardware
@@ -105,6 +109,7 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
         address = sp.getString("btAddr",null);
 
         reconnect = (SwipeRefreshLayout) v.findViewById(R.id.swiperefresh);
+        reconnect.setRefreshing(false);
 
         viewGraph1 = (ImageButton) v.findViewById(R.id.graphCheck1);
         viewGraph2 = (ImageButton) v.findViewById(R.id.graphCheck2);
@@ -229,20 +234,48 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
         v = inflater.inflate(R.layout.fragment_one, container, false);
             initiate();
             setUp();
+            BroadcastReceiver broadcastReceiver = new BluetoothReceiver();
+            IntentFilter f = new IntentFilter();
+            f.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+            f.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+            getActivity().registerReceiver(broadcastReceiver, f);
             EventBus.getDefault().register(this);
         return v;
     }
 
+   private void resetConnection() {
+        if (mmInStream != null) {
+            try {mmInStream.close();} catch (Exception e) {}
+            mmInStream = null;
+        }
+
+        if (mmOutStream != null) {
+            try {mmOutStream.close();} catch (Exception e) {}
+            mmOutStream = null;
+        }
+
+        if (btSocket != null) {
+            try {btSocket.close();} catch (Exception e) {}
+            btSocket = null;
+        }
+
+    }
+
     int stateArduino = 0;
+    private CountDownTimer timer;
+
     @Subscribe
     public void onStateReceived(ArduinoStateOnReceived event){
         stateArduino = event.getStateArduino();
         if(stateArduino == 0) {
             hardware_status.setText("Device Disconnected");
             hardware_status.setTextColor(Color.RED);
+            resetConnection();
+
         }else if(stateArduino == 1){
             hardware_status.setText("Device Connected");
             hardware_status.setTextColor(Color.GREEN);
+
         }
     }
 
@@ -365,11 +398,7 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
 
         super.onResume();
 
-            BroadcastReceiver broadcastReceiver = new BluetoothReceiver();
-            IntentFilter f = new IntentFilter();
-            f.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-            f.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-            getActivity().registerReceiver(broadcastReceiver, f);
+
 
             sysHandler();
             systemExtraTest();
@@ -378,25 +407,15 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
                 @Override
                 public void onRefresh() {
                     reconnect.setRefreshing(true);
-                    for (int x = 0; x < 2; x++) {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    if (btSocket != null) {
-                                        btSocket.close();
-                                        btSocket = null;
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                                //resetConnection();
                                 systemExtraTest();
+                                reconnect.setRefreshing(false);
                             }
 
                         }, 3000);
-
-                    }
-
                 }
             });
 
@@ -414,13 +433,7 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
     public void onPause()
     {
         super.onPause();
-            try {
-                if (address != null) {
-                    btSocket.close();
-                }
-            } catch (IOException e2) {
-                //insert code to deal with this
-            }
+           Log.d("TAG X","Called");
 
     }
 
@@ -432,13 +445,14 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
 
     //ConnectedThread
     private class ConnectedThread extends Thread {
-        private final InputStream mmInStream;
-        private final OutputStream mmOutStream;
+
+
 
         //creation of the connect thread
         public ConnectedThread(BluetoothSocket socket) {
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
+
 
             try {
                 //Create I/O streams for connection
@@ -482,14 +496,16 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
 
     }
 
-
-    private void systemExtraTest(){
+    int connStat = 0;
+    public void systemExtraTest(){
         Log.d("Call","CAlled");
 
 
         if(address!=null) {
             //create device and set the MAC address
+            btAdapter = BluetoothAdapter.getDefaultAdapter();
             device = btAdapter.getRemoteDevice(address);
+
             try {
                 btSocket = createBluetoothSocket(device);
             } catch (IOException e) {
@@ -497,16 +513,15 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
             }
             // Establish the Bluetooth socket connection.
 
-                try {
-                    btSocket.connect();
-                } catch (IOException e) {
                     try {
-                        btSocket.close();
+                        btSocket.connect();
+                    } catch (IOException e) {
+                        try {
+                            btSocket.close();
+                        } catch (IOException e2) {
 
-                    } catch (IOException e2) {
-
+                        }
                     }
-                }
 
 
                     mConnectedThread = new ConnectedThread(btSocket);
@@ -514,10 +529,13 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
             //I send a character when resuming.beginning transmission to check device is connected
             //If it is not an exception will be thrown in the write method and finish() will be called
                  mConnectedThread.write("x");
+
+
         }else{
 
         }
-        reconnect.setRefreshing(false);
+
+
     }
 
 

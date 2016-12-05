@@ -11,6 +11,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,9 +41,10 @@ public class MainActivity extends AppCompatActivity {
         cl = (CoordinatorLayout) findViewById(R.id.coorMain);
         stateArduino = event.getStateArduino();
         if(stateArduino == 0) {
-            snackBarCustom("Arduino Disconnected","Dismiss");
+            snackBarCustom("Arduino Disconnect, Pull down to reconnect","Dismiss");
         }else if(stateArduino == 1){
             snackBarCustom("Arduino Connected","Dismiss");
+
         }
     }
 
