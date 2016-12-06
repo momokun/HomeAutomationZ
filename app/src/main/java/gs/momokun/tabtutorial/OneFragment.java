@@ -170,7 +170,7 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
         final View textEntryView = factory.inflate(R.layout.change_name_lamp_dialog_custom, null);
         final EditText editTextDialogUserInput = (EditText) textEntryView.findViewById(R.id.editTextDialogUserInput);
         editTextDialogUserInput.setSingleLine(true);
-        adb = new AlertDialog.Builder(getContext());
+        adb = new AlertDialog.Builder(getContext(),android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         adb.setView(textEntryView);
 
         final String getUserInput = editTextDialogUserInput.getText().toString();
@@ -311,8 +311,11 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
     }
 
 
+
+
     private void sysHandler(){
         final String[] temp = new String[1];
+        final DatabaseHandler db = new DatabaseHandler(getContext());
         btConnectionHandler = new Handler(){
             //create method for receive
             public void handleMessage(android.os.Message messageFromArduino){
@@ -341,6 +344,9 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
                             temp_in_c.setText(temp[0] + " C");
                             current.setText("W");
                             energy.setText("WH");
+
+                            db.addContact(new DataLogging("date",temp[0]));
+
                         }
 
                         receivedDataFromArduino.delete(0,receivedDataFromArduino.length()); //clear
@@ -356,6 +362,7 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
     public void onResume() {
 
         super.onResume();
+           resetConnection();
             sysHandler();
             systemExtraTest();
             reconnect.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

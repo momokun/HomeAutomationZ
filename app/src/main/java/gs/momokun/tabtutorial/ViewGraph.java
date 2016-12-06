@@ -20,22 +20,24 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class ViewGraph extends AppCompatActivity {
 
 
-
+    DatabaseHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_graph);
+        db = new DatabaseHandler(this);
 
         GraphView graph = (GraphView) findViewById(R.id.graph);
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(generateData());
-        LineGraphSeries<DataPoint> series2 = new LineGraphSeries<>(generateData2());
-        graph.addSeries(series);
+        //LineGraphSeries<DataPoint> series = new LineGraphSeries<>(generateData());
+        LineGraphSeries<DataPoint> series2 = new LineGraphSeries<>(generateData());
+      //  graph.addSeries(series);
         graph.addSeries(series2);
         graph.setTitle("Example");
 
@@ -44,11 +46,11 @@ public class ViewGraph extends AppCompatActivity {
         graph.getLegendRenderer().setSpacing(15);
 
 
-        series.setTitle("Temp");
+        /*series.setTitle("Temp");
         series.setColor(Color.GREEN);
         series.setDrawDataPoints(true);
         series.setDataPointsRadius(10);
-        series.setThickness(5);
+        series.setThickness(5);*/
 
         series2.setTitle("Watt");
         series2.setColor(Color.BLUE);
@@ -65,16 +67,26 @@ public class ViewGraph extends AppCompatActivity {
     }
 
     private DataPoint[] generateData() {
-        int count = 32;
-        DataPoint[] values = new DataPoint[count];
-        for (int i=0; i<count; i++) {
-            double x = i;
-            double f = mRand.nextDouble()*0.15+0.3;
-            double y = Math.sin(i*f+2) + mRand.nextDouble()*0.3;
-            DataPoint v = new DataPoint(x, y);
-            values[i] = v;
+        int count = 0;
 
+        List<DataLogging> contacts = db.getAllContacts();
+        for(DataLogging x : contacts){
+            count++;
         }
+        int i = 0;
+        DataPoint[] values = new DataPoint[count];
+          for (DataLogging cn : contacts) {
+             String log = "Id: " + cn.get_id() + " ,Name: " + cn.get_date() + " ,Phone: " + cn.get_temp();
+                // Writing Contacts to log
+                double x = i;
+                double y = Double.parseDouble(cn.get_temp());
+                DataPoint v = new DataPoint(x, y);
+                Log.d("Name: ", log);
+                values[i] = v;
+              i++;
+           }
+
+
         return values;
     }
 
@@ -83,8 +95,8 @@ public class ViewGraph extends AppCompatActivity {
         DataPoint[] values = new DataPoint[count];
         for (int i=0; i<count; i++) {
             double x = i;
-            double f = mRand.nextDouble()*0.15+0.3;
-            double y = Math.sin(i*f+15) + mRand.nextDouble()*0.1;
+            double f = i;
+            double y = i+i;
             DataPoint v = new DataPoint(x, y);
             values[i] = v;
 
