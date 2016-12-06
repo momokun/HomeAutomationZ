@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -222,7 +223,6 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
             }
         });
 
-
         ad = adb.create();
         ad.show();
     }
@@ -235,32 +235,6 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
 
         spinner.setAdapter(adapter);
     }
-
-    private DataPoint[] generateData() {
-        int count = 0;
-        DatabaseHandler db = new DatabaseHandler(v.getContext());
-
-        List<DataLogging> contacts = db.getAllContacts();
-        for(DataLogging x : contacts){
-            count++;
-        }
-        int i = 0;
-        DataPoint[] values = new DataPoint[count];
-        for (DataLogging cn : contacts) {
-            String log = "Id: " + cn.get_id() + " ,Name: " + cn.get_date() + " ,Phone: " + cn.get_temp();
-            // Writing Contacts to log
-            double x = i;
-            double y = Double.parseDouble(cn.get_temp());
-            DataPoint v = new DataPoint(x, y);
-            Log.d("Name: ", log);
-            values[i] = v;
-            i++;
-        }
-
-
-        return values;
-    }
-
 
 
     public void changeElectronicName(ImageButton ibChangeName, final TextView tvChangeName){
@@ -435,7 +409,7 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
         super.onResume();
            resetConnection();
             sysHandler();
-            systemExtraTest();
+            new connectBluetooth().equals("");
             reconnect.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -444,7 +418,7 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
                             @Override
                             public void run() {
                                 //resetConnection();
-                                systemExtraTest();
+                                new connectBluetooth().equals("");
                                 reconnect.setRefreshing(false);
                             }
 
@@ -463,7 +437,7 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
 
     @Override
     public void callTheMethodInFragmentB() {
-        systemExtraTest();
+        new connectBluetooth().equals("");
     }
 
 
@@ -519,6 +493,54 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
 
 
     }
+
+    private class connectBluetooth extends AsyncTask<String, String, String> {
+        protected void onPreExecute(){
+        }
+
+        protected String doInBackground(String... params) {
+            if(address!=null) {
+                //create device and set the MAC address
+                btAdapter = BluetoothAdapter.getDefaultAdapter();
+                device = btAdapter.getRemoteDevice(address);
+
+                try {
+                    btSocket = createBluetoothSocket(device);
+                } catch (IOException e) {
+                    Toast.makeText(getContext(), "Socket creation failed", Toast.LENGTH_LONG).show();
+                }
+                // Establish the Bluetooth socket connection.
+
+                try {
+                    btSocket.connect();
+                } catch (IOException e) {
+                    try {
+                        btSocket.close();
+                    } catch (IOException e2) {
+
+                    }
+                }
+
+
+                mConnectedThread = new ConnectedThread(btSocket);
+                mConnectedThread.start();
+                //I send a character when resuming.beginning transmission to check device is connected
+                //If it is not an exception will be thrown in the write method and finish() will be called
+                mConnectedThread.write("x");
+
+
+            }else{
+
+            }
+            return null;
+        }
+
+        protected void onPostExecute(String result) {
+
+        }
+    }
+
+
 
     int connStat = 0;
     public void systemExtraTest(){
