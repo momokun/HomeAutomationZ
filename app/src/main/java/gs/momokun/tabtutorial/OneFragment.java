@@ -304,6 +304,12 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
     }
 
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        resetConnection();
+    }
+
 
     private void sysHandler(){
         final String[] temp = new String[1];
@@ -346,63 +352,12 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
         };
     }
 
-    /*
-    public class BluetoothReceiver extends BroadcastReceiver{
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
-                    -1);
-
-            String action = intent.getAction();
-            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-            LinearLayout ll = (LinearLayout) v.findViewById(R.id.linearlayoutMain);
-
-            switch (action){
-                case BluetoothDevice.ACTION_ACL_CONNECTED:
-                    //Toast.makeText(context, "Arduino Connected", Toast.LENGTH_SHORT).show();
-                    hardware_status.setText("Device Connected");
-                    hardware_status.setTextColor(Color.GREEN);
-                    final Snackbar snackbar = Snackbar.make(ll, "Nightly Builds - Logged as Administrator", Snackbar.LENGTH_INDEFINITE);
-                    snackbar.setAction("Dismiss", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            snackbar.dismiss();
-                        }
-                    });
-                    snackbar.show();
-                    break;
-                case BluetoothDevice.ACTION_ACL_DISCONNECTED:
-
-                    hardware_status.setText("Device Disconnected");
-                    hardware_status.setTextColor(Color.RED);
-                    final Snackbar snackbar2 = Snackbar.make(ll, "XNightly Builds - Logged as Administrator", Snackbar.LENGTH_INDEFINITE);
-                    snackbar2.setAction("Dismiss", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            snackbar2.dismiss();
-                        }
-                    });
-                    snackbar2.show();
-
-                    break;
-            }
-
-        }
-
-    }*/
-
     @Override
     public void onResume() {
 
         super.onResume();
-
-
-
             sysHandler();
             systemExtraTest();
-
             reconnect.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -418,15 +373,6 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
                         }, 3000);
                 }
             });
-
-
-
-        //Get MAC address from DeviceListActivity via intent
-        //Intent intent = getActivity().getIntent();
-        //Get the MAC address from the DeviceListActivty via EXTRA
-        //address = intent.getStringExtra(PairDevice.DeviceAddress);
-
-
     }
 
     @Override
