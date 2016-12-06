@@ -27,14 +27,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -42,6 +49,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.UUID;
 
 import static gs.momokun.tabtutorial.R.id.editTextDialogUserInput;
@@ -170,7 +178,7 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
         final View textEntryView = factory.inflate(R.layout.change_name_lamp_dialog_custom, null);
         final EditText editTextDialogUserInput = (EditText) textEntryView.findViewById(R.id.editTextDialogUserInput);
         editTextDialogUserInput.setSingleLine(true);
-        adb = new AlertDialog.Builder(getContext(),android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        adb = new AlertDialog.Builder(getContext());
         adb.setView(textEntryView);
 
         final String getUserInput = editTextDialogUserInput.getText().toString();
@@ -192,6 +200,68 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
         ad = adb.create();
         ad.show();
     }
+
+    LayoutInflater factory;
+    View graphBaseView;
+
+
+    private void graphViewDialogBuilder(String positiveButtonMsg, String negativeButtonMsg){
+        factory = LayoutInflater.from(v.getContext());
+        graphBaseView = factory.inflate(R.layout.activity_view_graph,null);
+        adb = new AlertDialog.Builder(v.getContext(),android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        adb.setView(graphBaseView);
+        spinnerRangeDate();
+        GraphAdapter ga = new GraphAdapter(getActivity(),v.getContext(), graphBaseView);
+        ga.viewGraph();
+
+        adb.setCancelable(true).setNegativeButton(negativeButtonMsg, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ad.dismiss();
+
+            }
+        });
+
+
+        ad = adb.create();
+        ad.show();
+    }
+
+    private void spinnerRangeDate(){
+        Spinner spinner = (Spinner) graphBaseView.findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(v.getContext(),
+                R.array.range_array_date, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
+    }
+
+    private DataPoint[] generateData() {
+        int count = 0;
+        DatabaseHandler db = new DatabaseHandler(v.getContext());
+
+        List<DataLogging> contacts = db.getAllContacts();
+        for(DataLogging x : contacts){
+            count++;
+        }
+        int i = 0;
+        DataPoint[] values = new DataPoint[count];
+        for (DataLogging cn : contacts) {
+            String log = "Id: " + cn.get_id() + " ,Name: " + cn.get_date() + " ,Phone: " + cn.get_temp();
+            // Writing Contacts to log
+            double x = i;
+            double y = Double.parseDouble(cn.get_temp());
+            DataPoint v = new DataPoint(x, y);
+            Log.d("Name: ", log);
+            values[i] = v;
+            i++;
+        }
+
+
+        return values;
+    }
+
+
 
     public void changeElectronicName(ImageButton ibChangeName, final TextView tvChangeName){
         ibChangeName.setOnClickListener(new View.OnClickListener() {
@@ -223,8 +293,9 @@ public class OneFragment extends Fragment implements TwoFragment.FragmentBMethod
         ibViewGraph.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(v.getContext(), ViewGraph.class);
-                startActivity(i);
+               // Intent i = new Intent(v.getContext(), ViewGraph.class);
+               // startActivity(i);
+                graphViewDialogBuilder("Ok","Cancel");
             }
         });
     }
