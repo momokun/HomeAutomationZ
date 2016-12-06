@@ -47,10 +47,7 @@ public class BluetoothReceiver extends BroadcastReceiver{
         }
 
 
-
-
-
-
+        
       /*switch(state){
 
             case BluetoothAdapter.STATE_CONNECTED:
